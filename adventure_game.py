@@ -1,127 +1,156 @@
-import random
 import time
+import random
 
 
-def print_sleep(message, wait_time):
-    print(message)
-    time.sleep(wait_time)
+human_you_meet_at_McDonald = ["cashier", "pirate", "elve", "dinosaur"]
 
-def combat(weapon):
-    print_sleep(f"The {enemy} attacks you!", 2)
-    if weapon == "batlef":
-        print_sleep(f"You a chosen warrior. Last of a dying breed, "
-                    "your armed with a {weapon}.", 2)
-    choice = input("Would you like to (1) bust some heads or (2) "
-                   "run away like a coward?")
-    if choice == '1':
-        if weapon == "batlef":
-            print_sleep(f"You do your best...", 1)
-            print_sleep(f"but your {weapon} is no match for the {enemy}.", 2)
-            print_sleep(f"You have been defeated!""", 2)
-        elif weapon == "sword":
-            print_sleep(f"As the {enemy} moves to "
-                        "attack, you unsheath your new sword.", 2)
-            print_sleep(f"The sword shines brightly "
-                        "in your hand as you prepare "
-                        "yourself for any attack.", 3)
-            print_sleep(f"But the {enemy} takes one "
-                        "look at your sword and prepares to fight!", 3)
-            print_sleep(f"You have rid the town of the {enemy}. "
-                        "You are victorious!", 3)
-        elif weapon == "ak-47":
-            print_sleep(f"As the {enemy} tries to grab your ak-r7, "
-                        "you pull the trigger.", 2)
-            print_sleep(f"The gold colored rifle shines brightly "
-                        "in your warrior hands!", 3)
-            print_sleep(f"The {enemy} tries to grab the Marine "
-                        "but he gets a chest full of lead!", 3)
-            print_sleep(f"The {enemy} wakes from his dream screaming. "
-                        "He can't believe he's alive!", 3)
-    elif choice == '2':
-        print_sleep("You run back into the field. Luckily, you don't "
-                    "seem to have been followed.", 2)
-        where_to()
-    elif choice == '3':
-        print_sleep("End Game", 3)
-        where_to()
+food = ["McDonald Menu", "ice cream", "chicken nugget", "salat"]
+
+template_for_food = ["You ordered {{food}}",
+                     "You screamed {{food}}",
+                     "You whisper {{food}}"]
 
 
-def play_again():
-    choice = ''
-    while choice not in ['y', 'n']:
-        choice = input("Would you like to play again? (y/n)")
-        if choice == 'n':
-            print_sleep("Thanks for playing! See you next time.", 2)
-            return 'game_over'
-        elif choice == 'y':
-            print_sleep("Excellent! Restarting the game ...", 2)
-            weapon = 'batlef'
-            return 'running'
+# This will define what you will order at McDonald
+def random_sentence_in_McDonald(food, template_for_food):
+    template = random.choice(template_for_food)
+    output = []
+    index = 0
+
+    while index < len(template):
+        if template[index:index+8] == "{{food}}":
+            output.append(random.choice(food))
+            index += 8
+        else:
+            output.append(template[index])
+            index += 1
+
+    output = "".join(output)
+    return output
 
 
+# This will define who you meet at Mcdonald
+def random_person_in_McDonald(human_you_meet_at_McDonald):
+    sentence = "You go to the {{person}}, one of the McDonalds staff"
+    output = []
+    index = 0
+
+    while index < len(sentence):
+        if sentence[index:index+10] == "{{person}}":
+            output.append(random.choice(human_you_meet_at_McDonald))
+            index += 10
+        else:
+            output.append(sentence[index])
+            index += 1
+
+    output = "".join(output)
+    return output
+
+
+# It is just a normal print method but with
+# the exception that it will pause for 2 sec before it continues
+def print_pause(words_you_want_to_print):
+    print(words_you_want_to_print)
+    time.sleep(2)
+
+
+# Here is the intro at the start of the game.
 def intro():
-    print_sleep("You find yourself standing in the streets of "
-                "Baltimore, the concrete jungle.", 3)
-    print_sleep(f"Command has said that a {enemy} is somewhere "
-                "around here, and has been terrifying the city.", 3)
-    print_sleep("In front of you is an abandoned building.", 2)
-    print_sleep("To your right is a dark alley.", 2)
-    print_sleep(f"In your hand you hold your trusty {weapon}.", 2)
+    print_pause("You find yourself in a city corner in New York")
+    print_pause("In front of you are two passageways")
 
 
-def where_to():
-    print_sleep("", 1)
-    print_sleep("Enter 1 to knock on the door of the abandoned buiding.", 2)
-    print_sleep("Enter 2 to peer into the alley.", 2)
-    print_sleep("What would you like to do?", 0)
-    choice = ''
-    while choice not in ['1', '2']:
-        choice = input("(Please enter 1 or 2.)\n")
-
-    if choice == '1':
-        building()
-    # elif choice == '2':
-        # alley()
+# checking the input of the player.
+def valid_input(prompt, option1, option2):
+    while True:
+        response = input(prompt).lower()
+        if option1 in response:
+            break
+        elif option2 in response:
+            break
+        else:
+            print_pause("Sorry, I don't understand.")
+    return response
 
 
-def building():
-    print_sleep("You approach the door of the building.", 2)
-    print_sleep(f"You are about to knock when the door "
-                "opens and out steps a {enemy}.", 2)
-    print_sleep(f"Ahhhh! That is the {enemy}'s building!", 2)
-    combat(weapon)
+# The bank, one of two places where the player can go
+def bank(items):
+    print_pause("You are now in the bank")
+    # if the player already has the money, they player will return to the city
+    if "money" in items:
+        print_pause("You already have the money\n"
+                    "There is nothing more to do here!")
+        print_pause("You go out of the bank")
+        city(items)
+    # If the player dont have the money, he will get it here
+    else:
+        print_pause("You go to the bank machine and withdraw 15€")
+        items.append("money")
+        print_pause("Now you feel like a rich man!")
+        print_pause("You go out of the bank")
+        city(items)
 
 
-def alley_visited():
-    global alley_visited
-    global weapon
-    print_sleep("You look down the alley.", 2)
-    if alley_visited:
-        print_sleep("You've been here before, and gotten "
-                    "all the good stuff. It's just an empty alley now.", 2)
-    elif alley_visited is False:
-        print_sleep("It turns out to be only a very small "
-                    "abandoned building.", 2)
-        print_sleep("Your eye catches a glint of metal behind a rock.", 2)
-        print_sleep("You have found the ak-47 of your dreams!", 2)
-        print_sleep(f"You discard your silly old {weapon} "
-                    "and take the ak-47 with you.", 2)
-        weapon = "sword"
-    alley_visited = True
-    print_sleep("You walk back out to the field. You wipe of "
-                "the sweat and drink your gatorade", 2)
-    where_to()
+# the end where the player can choose if they want to play the game again.
+def the_end():
+    play_again = valid_input("Do you want to play again?y/n \n", "y", "n")
+    if "y" in play_again:
+        the_game_begins()
+    elif "n" in play_again:
+        print_pause("Thanks for playing the game!")
 
 
-game_state = 'running'
-while game_state == 'running':
+# the restaurant
+def McDonald(items):
+    print_pause(
+        "You are now in McDonald, one of the happiest place in the world")
+    print_pause(random_person_in_McDonald(human_you_meet_at_McDonald))
+    print_pause(random_sentence_in_McDonald(food, template_for_food))
+    print_pause("Then you need to pay")
+    if "money" in items:
+        print_pause(
+            "Luckily you just withdrawed some money and you can pay your meal")
+        print_pause("You won the game")
+        the_end()
+    # The player decides what to do after
+    # they found out that they dont have the money
+    else:
+        Donald_decision = valid_input(
+            "You didn't have any money with you. Now you have two options\n"
+            "1. run out of the restaurant\n"
+            "2. threat the cashier with a bad rating?",
+            "1", "2")
+        if Donald_decision == "1":
+            print_pause("You panic and run out of the restaurant.")
+            city(items)
+        elif Donald_decision == "2":
+            print_pause(
+                "You threated the cashier."
+                " Unfortunately the cashier is an underground police")
+            print_pause("He arrested you.")
+            print_pause("You lose the game")
+            the_end()
 
-    enemies = ['nokton', 'kaylon', 'vulcan', 'klingon', 'moklan']
-    enemy = random.choice(enemies)
-    weapon = 'batlef'
-    alley_visited = False
 
+# The place where the player can choose if they want to McDonald or the bank
+def city(items):
+    response = valid_input("You are in the city\n"
+                           "Please choose your path!\n"
+                           "Would you like to go to the bank or McDonald?\n",
+                           "bank", "mcdonald")
+    if "bank" in response:
+        print_pause("You go to the bank!")
+        bank(items)
+    elif "mcdonald" in response:
+        print_pause("Good choice! You go to the McDonald")
+        McDonald(items)
+
+
+# Here is the game. When you call it, the game will start
+def the_game_begins():
+    items = []
     intro()
-    where_to()
+    city(items)
 
-    game_state = play_again()
+
+the_game_begins()
